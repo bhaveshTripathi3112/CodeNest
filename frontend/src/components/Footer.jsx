@@ -13,7 +13,7 @@ const Footer = () => {
             Code. Learn. Innovate. © {new Date().getFullYear()}
           </p>
           <p className="text-sm text-gray-600 mt-1">
-            Made with ❤️ by Bhavesh Tripathi & Yash Kirola
+            Made by Bhavesh Tripathi & Yash Kirola
           </p>
         </div>
 

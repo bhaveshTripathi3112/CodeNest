@@ -94,7 +94,7 @@ function AboutPage() {
           <p>
             Designed & Developed by{" "}
             <span className="font-semibold text-black">Bhavesh Tripathi & Yash Kirola</span>{" "}
-            | Built with ❤️ using MERN Stack
+            | Built using MERN Stack
           </p>
         </div>
       </div>
