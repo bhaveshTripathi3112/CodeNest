@@ -1,5 +1,5 @@
 import express,{ Router } from "express";
-import { adminRegister, deleteProfile, getAllUsers, getProfile, login, logout, register } from "../controllers/userAuth.controllers.js";
+import { adminRegister, getAllUsers, getProfile, login, logout, register } from "../controllers/userAuth.controllers.js";
 import { userMiddleware } from "../middleware/user.middleware.js";
 import { adminMiddleware } from "../middleware/adminMiddleware.js";
 import isEmail from "validator/lib/isEmail.js";
@@ -27,7 +27,6 @@ authRouter.get("/check",userMiddleware,(req,res)=>{
     })
 })
 
-authRouter.delete('/deleteProfile',userMiddleware,deleteProfile)
 authRouter.get("/getProfile",userMiddleware,getProfile)
 authRouter.get("/getProfile/:id", adminMiddleware, getProfile);
 authRouter.get("/getAllUsers",adminMiddleware,getAllUsers)

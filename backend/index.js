@@ -28,7 +28,6 @@ const port = process.env.PORT || 5000
 app.use("/user",authRouter)
 app.use("/problem",problemRouter)
 app.use("/submission",submitRouter)
-// app.use("/discussion",discussionRouter)
 app.use("/leaderboard",leaderboardRouter)
 app.get("/", (req, res) => {
   res.send("Server is running successfully");

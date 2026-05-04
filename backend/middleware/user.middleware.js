@@ -6,7 +6,9 @@ export const userMiddleware = async(req,res,next)=>{
     try {
         const {token} = req.cookies;
         if(!token){
-            throw new Error("Token is not present")
+            // throw new Error("Token is not present")
+            req.result = null
+            return next()
         }
         const payload = jwt.verify(token,process.env.JWT_KEY)
         const {_id} = payload

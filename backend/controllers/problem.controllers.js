@@ -4,7 +4,6 @@ import { Submission } from "../models/submission.model.js"
 import { User } from "../models/user.model.js"
 import { getLanguageById, submitBatch, submitToken } from "../utils/problem.utility.js"
 import { Problem } from "../models/problem.model.js"
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const createProblem = async(req,res)=>{
     const {title ,  description , difficultyLevel , tags , visibleTestCases,
@@ -81,73 +80,7 @@ export const createProblem = async(req,res)=>{
     }
 }
 
-export const updateProblem = async(req,res)=>{
-    const {id} =  req.params
-     //verify the data received from frontend
-    const {title ,  description , difficultyLevel , tags , visibleTestCases,
-    hiddenTestCases,startCode,referenceSolution,problemCreator} = req.body
 
-    try {
-       
-        if(!id){
-            return res.status(400).send("Missing id.")
-        }
-
-        const DSAProblem = await Problem.findById(id)
-        if(!DSAProblem){
-            return res.status(404).send("ID is not present in the server.")
-        }
-
-        //! if the below for loop executes fully means admin ne jo data bheja hia wo ekdum picture perfect hai aur usko ham DB mein store kar skte hai 
-        
-        for(const {language , completeCode} of referenceSolution){
-
-
-            //source_code
-            // language_id
-            //stdin
-            //expected_output
-
-            const languageId = getLanguageById(language)
-
-            //creating a batch for submission
-            const submissions = visibleTestCases.map((testcase)=>({
-                source_code:completeCode,
-                language_id : languageId,
-                stdin: testcase.input,
-                expected_output:testcase.output
-            }))
-
-            //submit batch to judge0
-            const submitResult = await submitBatch(submissions)
-            // console.log(submitResult);
-            const resultToken = submitResult.map((value) => value.token)
-
-            const testResult = await submitToken(resultToken)
-
-            
-            // console.log(testResult);
-            
-            
-            
-
-            for(const test of testResult){
-                if(test.status_id != 3 ){
-                    return res.status(400).send("Error occured") 
-
-                    //! in future i will specify specific error here for each status_id
-                }
-            }
-            
-        }
-
-        const newProblem = await Problem.findByIdAndUpdate(id , {...req.body} , {runValidators:true,new:true})
-        return res.status(200).send(newProblem)
-
-    } catch (error) {
-        return res.status(500).send("Error "+error)
-    }
-}
 
 export const deleteProblem = async(req,res)=>{
     const {id} = req.params
@@ -234,86 +167,5 @@ export const submittedProblem = async(req,res)=>{
 }
 
 
-export const getProblemByIdAdmin = async (req, res) => {
-  try {
-    const { id } = req.params;
 
-    const problem = await Problem.findById(id);
-
-    if (!problem) {
-      return res.status(404).json({ message: "Problem not found" });
-    }
-
-    // Return everything — admin needs full details
-    res.status(200).json(problem);
-
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
-
-
-// INIT GEMINI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-export const getHint = async (req, res) => {
-  try {
-    const userId = req.result._id;
-    const problemId = req.params.id;   // FIXED 🔥
-
-    const user = await User.findById(userId);
-    const problem = await Problem.findById(problemId);
-
-    if (!problem) {
-      return res.status(404).json({ success: false, message: "Problem not found" });
-    }
-
-    // Find hint usage for this problem
-    let usage = user.hintUsage.find(
-      (h) => h.problemId.toString() === problemId.toString()  // FIXED 🔥
-    );
-
-    // Max 2 hints allowed
-    if (usage && usage.count >= 2) {
-      return res.status(403).json({
-        success: false,
-        message: "You have used your 2 available hints"
-      });
-    }
-
-    // Build prompt
-    const prompt = `
-      Provide ONLY A HINT, not the full solution.
-      Avoid giving code or explicit logic.
-
-      Problem Title: ${problem.title}
-      Difficulty: ${problem.difficultyLevel}
-      Description: ${problem.description}
-      Visible Test Cases: ${JSON.stringify(problem.visibleTestCases)}
-    `;
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    const result = await model.generateContent(prompt);
-    const hint = result.response.text();
-
-    // Update usage
-    if (!usage) {
-      user.hintUsage.push({ problemId, count: 1 });
-    } else {
-      usage.count += 1;
-    }
-
-    await user.save();
-
-    return res.json({
-      success: true,
-      hint,
-      remaining: usage ? 2 - usage.count : 1,
-    });
-
-  } catch (err) {
-    console.log("Hint error:", err);
-    return res.status(500).json({ success: false, message: "Failed to generate hint" });
-  }
-};
 

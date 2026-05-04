@@ -9,10 +9,17 @@ import Login from './pages/Login';
 import HomePage from './pages/HomePage';
 import Navbar from './components/Navbar';
 import ProblemsPage from './pages/ProblemsPage';
-import LeaderboardPage from './pages/LeaderBoardPage';
 import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
 import SolveProblemPage from './pages/SolveProblemPage';
+import AdminPanel from './pages/Adminpanel';
+import AdminRoute from './components/AdminRoute';
+import TrackUsersPage from './pages/TrackUsersPage';
+import RegisterAdminPage from './pages/RegisterAdminPage'
+import CreateProblemPage from './pages/CreateProblemPage'
+import DeleteProblemPage from './pages/DeleteProblemPage'
+import LeaderboardPage from './pages/LeaderBoardPage';
+import UserProfileForAdmin from './pages/UserProfileForAdmin';
 function App() {
   const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -49,8 +56,55 @@ function App() {
         <Route path="/problems" element={<ProblemsPage />} />
         <Route path="/problem/:id" element={<SolveProblemPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/leaderboards" element={<LeaderboardPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:id" element={<ProfilePage />} />
+        <Route path="/leaderboards" element={<LeaderboardPage />} />
+
+
+        <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminPanel />
+          </AdminRoute>
+        }
+        />
+
+         <Route
+          path="/admin/createProblem"
+          element={
+            <AdminRoute>
+              <CreateProblemPage />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/deleteProblem"
+          element={
+            <AdminRoute>
+              <DeleteProblemPage />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/register"
+          element={
+            <AdminRoute>
+              <RegisterAdminPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/trackUsers"
+          element={
+            <AdminRoute>
+              <TrackUsersPage />
+            </AdminRoute>
+          }
+        />
+        <Route path="/admin/user/:id" element={<AdminRoute><UserProfileForAdmin /></AdminRoute>} /> 
     </Routes>
     
 

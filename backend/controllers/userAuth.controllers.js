@@ -175,12 +175,6 @@ export const getProfile = async (req, res) => {
 export const adminRegister = async(req,res)=>{
     try {
 
-        //? use this if you want to use only usermiddleware
-        // if(req.result.role != 'admin'){
-        //     throw new Error("Invalid Credentials")
-        // }
-
-        //validate the data
         validate(req.body)
 
         const {firstName , emailId , password} = req.body
@@ -216,20 +210,6 @@ export const adminRegister = async(req,res)=>{
 }
 
 
-export const deleteProfile = async(req,res)=>{
-    try {
-        const userId = req.result._id
-
-        await User.findByIdAndDelete(userId)
-        // await Submission.deleteMany({userId})
-
-        res.status(200).send("Deleted Successfully")
-    } catch (error) {
-       return res.status(500).json({ message: error.message || "Internal Server Error" })
-    }
-}
-
-
 export const getAllUsers = async (req, res) => {
   try {
     // Only admin can access
@@ -240,7 +220,7 @@ export const getAllUsers = async (req, res) => {
       });
     }
 
-    const users = await User.find().select("-password"); // exclude password
+    const users = await User.find().select("-password");
     res.status(200).json({
       success: true,
       message: "All users fetched successfully",

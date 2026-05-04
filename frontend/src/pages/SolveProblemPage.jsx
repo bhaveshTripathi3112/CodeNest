@@ -193,27 +193,6 @@ export default function SolveProblemPage() {
     }
   };
 
-  const fetchHint = async () => {
-    try {
-      setLoadingHint(true);
-      setHint("");
-      setHintError("");
-
-      const res = await axiosClient.post(`/problem/${id}/hint`);
-      setHint(res.data.hint);
-    } catch (err) {
-      const msg = err.response?.data?.message;
-
-      if (err.response?.status === 403) {
-        setHintError(msg);
-        return;
-      }
-
-      setHintError("Unable to generate hint. Try again later.");
-    } finally {
-      setLoadingHint(false);
-    }
-  };
 
   if (!problem) return <p className="p-6 text-gray-600">Loading problem...</p>;
 
@@ -222,17 +201,17 @@ export default function SolveProblemPage() {
       {/* LEFT PANEL */}
       <div className="md:w-1/2 border-r border-gray-300 p-6 overflow-y-auto bg-white">
         <div className="flex gap-3 mb-4 flex-wrap">
-          {["description", "submissions", "hint", "solution"].map((tab) => (
+          {["description", "submissions","solution"].map((tab) => (
             <button
               key={tab}
               disabled={
-                (tab === "solution" && !hasAccepted) ||
-                (tab === "hint" && loadingHint)
+                (tab === "solution" && !hasAccepted) 
+                
               }
               onClick={() => {
                 setActiveTab(tab);
                 if (tab === "submissions") fetchSubmissions();
-                if (tab === "hint") fetchHint();
+               
               }}
               className={`px-3 py-1 rounded text-sm border ${
                 activeTab === tab
@@ -398,38 +377,6 @@ export default function SolveProblemPage() {
           </div>
         )}
 
-        {/* Hint */}
-        {activeTab === "hint" && (
-          <div className="bg-white p-4 mt-3 rounded border border-gray-300">
-            <h2 className="text-xl font-semibold text-black mb-2">
-              Hint
-            </h2>
-
-            {hintError && (
-              <div className="p-3 rounded border border-red-300 bg-red-50 mb-3">
-                <p className="text-red-600 font-medium">{hintError}</p>
-              </div>
-            )}
-
-            {loadingHint ? (
-              <p className="text-gray-500">Generating hint...</p>
-            ) : hint ? (
-              <p className="text-gray-700 whitespace-pre-line">{hint}</p>
-            ) : (
-              <p className="text-gray-500">Click the button to get a hint.</p>
-            )}
-
-            <button
-              onClick={fetchHint}
-              disabled={loadingHint}
-              className={`mt-3 px-4 py-2 rounded text-white ${
-                loadingHint ? "bg-gray-500" : "bg-purple-600 hover:bg-purple-700"
-              }`}
-            >
-              {loadingHint ? "Getting Hint..." : "Get Hint"}
-            </button>
-          </div>
-        )}
       </div>
 
       {/* RIGHT PANEL */}

@@ -13,14 +13,14 @@ const Footer = () => {
             Code. Learn. Innovate. © {new Date().getFullYear()}
           </p>
           <p className="text-sm text-gray-600 mt-1">
-            Made with ❤️ by Bhavesh Tripathi & Yash Kirola
+            Made by Bhavesh Tripathi & Yash Kirola
           </p>
         </div>
 
         {/* Right - Social Icons */}
         <div className="flex gap-5 text-gray-600">
           <a
-            href="https://github.com/bhaveshTripathi3112"
+            href="https://github.com/bhaveshTripathi3112/CodeNest"
             target="_blank"
             rel="noreferrer"
             className="hover:text-black"
