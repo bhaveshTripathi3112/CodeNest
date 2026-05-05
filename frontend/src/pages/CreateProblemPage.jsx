@@ -178,14 +178,16 @@ export default function CreateProblemPage() {
 
           {visibleFields.map((f, i) => (
             <div key={f.id} className="border p-3">
-              <textarea {...register(`visibleTestCases.${i}.input`)} placeholder="Input" />
-              <textarea {...register(`visibleTestCases.${i}.output`)} placeholder="Output" />
-              <textarea {...register(`visibleTestCases.${i}.explanation`)} placeholder="Explanation" />
-              <button type="button" onClick={() => remove(i)}>Remove</button>
+              <textarea {...register(`visibleTestCases.${i}.input`)} placeholder="Input" className="border p-2" />
+              <textarea {...register(`visibleTestCases.${i}.output`)} placeholder="Output" className="border p-2" />
+              <textarea {...register(`visibleTestCases.${i}.explanation`)} placeholder="Explanation" className="border p-2" />
+              <button type="button" onClick={() => remove(i)} className="rounded bg-blue-400 px-2 py-1 text-white ml-5">
+                Remove
+              </button>
             </div>
           ))}
 
-          <button type="button" onClick={() => append({ input:"",output:"",explanation:"" })}>
+          <button type="button" onClick={() => append({ input:"",output:"",explanation:"" })} className="rounded bg-blue-400 px-2 py-1 text-white">
             Add Testcase
           </button>
         </div>
